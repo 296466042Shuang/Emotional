@@ -1,52 +1,22 @@
-# Author: Zhi Kai
-# Time:  0:25
 import numpy as np
-from datetime import datetime
-from pyhrv.time_domain import time_domain
-from pyhrv.frequency_domain import frequency_domain
-from pyhrv.nonlinear import nonlinear
+import openpyxl
 
-# 定义心率数据文件名
-filename = 'heart_rate_data.txt'
+# 从.xlsx文件中读取心率数据
+file_name = "F:\PythonProject\EmotionalAnalysis\Data\\record_1.xlsx"
+wb = openpyxl.load_workbook(file_name)
+sheet = wb.active
 
-# 读取心率数据文件
-with open(filename, 'r') as f:
-    lines = f.readlines()
+hr_data = []
+for row in sheet.iter_rows(min_row=2, values_only=True):  # 跳过表头
+    hr_data.append((int(row[0]), int(row[1])))
 
-# 创建一个时间戳数组和一个心率数组
-timestamps = []
-hr_values = []
+# 过滤掉为0的数据
+filtered_hr_data = [hr for _, hr in hr_data if int(hr) > 0]
 
-# 从文件中提取时间戳和心率数据
-for line in lines:
-    parts = line.split(',')
-    timestamp = datetime.strptime(parts[0], '%Y-%m-%d %H:%M:%S')
-    hr_value = int(parts[1])
-    timestamps.append(timestamp)
-    hr_values.append(hr_value)
+# 计算心率差值
+hr_diff = np.diff(filtered_hr_data)
 
-# 将心率数据转换为numpy数组
-hr_values = np.array(hr_values)
+# 计算RMSSD
+rmssd = np.sqrt(np.mean(np.square(hr_diff)))
 
-# 计算时间域特征
-time_features = time_domain(hr_values)
-
-# 计算频率域特征
-freq_features = frequency_domain(hr_values)
-
-# 计算非线性特征
-len(hr_values)
-nonlinear_features = nonlinear(hr_values)
-
-# 输出特征结果
-print('Time domain features:')
-for key, value in time_features.items():
-    print(f'{key}: {value}')
-
-print('Frequency domain features:')
-for key, value in freq_features.items():
-    print(f'{key}: {value}')
-
-print('Nonlinear features:')
-for key, value in nonlinear_features.items():
-    print(f'{key}: {value}')
+print(f"RMSSD: {rmssd}")
