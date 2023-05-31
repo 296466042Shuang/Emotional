@@ -23,15 +23,32 @@ import numpy as np
 #csv_files = glob.glob('F:\PythonProject\EmotionalAnalysis\\filter\P8\*.csv')
 #csv_files = glob.glob('F:\PythonProject\EmotionalAnalysis\\filter\P9\*.csv')
 
-csv_files = glob.glob('F:\PythonProject\EmotionalAnalysis\\filter\P10\*.csv')
+# csv_files = glob.glob('F:\PythonProject\EmotionalAnalysis\\filter\P10\*.csv')
+#
+# # Initialize an empty list to hold the dataframes
+# dataframes = []
+#
+# # Loop through the list of csv files
+# for csv in csv_files:
+#     # Load the csv file and append it to the list
+#     dataframes.append(pd.read_csv(csv))
+#
+# # Concatenate all dataframes in the list into one dataframe
+# data = pd.concat(dataframes)
+
+dirs = [f'F:\\PythonProject\\EmotionalAnalysis\\filter\\P{i}' for i in range(1, 11)]
 
 # Initialize an empty list to hold the dataframes
 dataframes = []
 
-# Loop through the list of csv files
-for csv in csv_files:
-    # Load the csv file and append it to the list
-    dataframes.append(pd.read_csv(csv))
+# Loop through each directory
+for dir in dirs:
+    # Get a list of all csv files in the current directory
+    csv_files = glob.glob(f'{dir}\\*.csv')
+
+    # Loop through the list of csv files and append each dataframe to the list
+    for csv in csv_files:
+        dataframes.append(pd.read_csv(csv))
 
 # Concatenate all dataframes in the list into one dataframe
 data = pd.concat(dataframes)
